@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+//В суперглобальном массиве $GLOBALS создаём элемент 'config', являющийся массивом.
 $GLOBALS['config'] = array(
     'mysql' => array(
         'host' => '127.0.0.1',
