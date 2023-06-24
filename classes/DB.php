@@ -5,7 +5,7 @@ class DB
     private $_pdo;
     private $_query;
     private $_error = false;
-    private $_results;
+    private $_results; //Найденные строки в базе данных, сохранённые в форме объекта
     private $_count = 0;
     private function __construct()
     {
@@ -37,7 +37,7 @@ class DB
         //Результат выполнения метода prepare экземпляра класса PDO записывается в переменную _query (в случае успешного выполнения метода)
         if ($this->_query = $this->_pdo->prepare($sql)) {
             $x = 1;
-            //Если массив $params соддержит хотя бы один элемени, то 
+            //Если массив $params соддержит хотя бы один элемент, то 
             if (count($params)) {
                 //пробегаем по этому массиву.
                 foreach ($params as $param) {
@@ -48,7 +48,7 @@ class DB
             }
             // Пытаемся выполнить запрос
             if ($this->_query->execute()) {
-                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ); //Возвращаем результат в виде объекта и записываем его в свойство _results
                 $this->_count = $this->_query->rowCount();
             } else {
                 $this->_error = true;
@@ -98,6 +98,38 @@ class DB
     {
         return $this->action('DELETE', $table, $where);
     }
+    //Метод добавляет строки в таблицу.
+    //В качестве аргументов принимает имя таблицы и массив с именами столбцов и вносимыми в таблицу значениями.
+    public function insert(string $table, array $fields = array())
+    {
+        if (count($fields)) {
+            $keys = array_keys($fields);
+            $values = '';
+            $x = 1;
+            foreach ($fields as $field) {
+                $values .= '?';
+                if ($x < count($fields)) {
+                    $values .= ', ';
+                }
+                $x++;
+            }
+            die($values);
+            $sql = "INSERT INTO users (`" . implode('`, `', $keys) . "`) VALUES ($values)";
+            echo $sql;
+        } else {
+            return false;
+        }
+    }
+
+    public function results()
+    {
+        return $this->_results;
+    }
+    //Возвращает первый элемент массива объектов $_results;
+    public function first()
+    {
+        return $this->results()[0];
+    }
 
     // Метод всего лишь возвращает значение приватного свойства _error
     public function error(): bool
@@ -105,7 +137,7 @@ class DB
         return $this->_error;
     }
 
-    public function count()  
+    public function count()
     {
         return $this->_count;
     }

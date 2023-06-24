@@ -2,6 +2,7 @@
 
 session_start();
 //В суперглобальном массиве $GLOBALS создаём элемент 'config', являющийся массивом.
+//В массиве 'config' храняться параметры для подключения к базе данных
 $GLOBALS['config'] = array(
     'mysql' => array(
         'host' => '127.0.0.1',
@@ -25,4 +26,5 @@ spl_autoload_register(function ($class) {
     require_once './classes/' . $class . '.php';
 });
 //К сожаению автододгрузчик функций не предусмотрен
+//поэтому  одключаем функцию вручную
 require_once './functions/sanitize.php';

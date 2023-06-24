@@ -1,13 +1,12 @@
 <?php
 
-require_once './core/init.php';
+require_once './core/init.php'; // Стартуем сессию, Записываем в $GLOBALS массив с параметрами,
+//необходимыми для подключения к БД, подклоючаем автозагрузку классов и подключаем санитарную функцию.
 
-$user =  DB::getInstance()->get('users', array('username', '=', 'billy'));
-
-if (!$user->count()) {
-    echo "No user!";
-} else {
-    echo "OK!";
-}
-// var_dump($user->error());
-// Почему то при допущении ошибки значение $_error не становиться true и следовательно error() не возвращает true!!!!!!
+//Вызываем статический метод класса DB getInstance(), который возвращает экземпляр класса DB.
+//Через экземпляр класса DB обращаемся к методу insert(), который добавляет строку с данными в таблицу.
+$user = DB::getInstance()->insert('users', array(
+    'username' => 'Dale',
+    'password' => 'password',
+    'salt' => 'salt'
+));
