@@ -1,12 +1,11 @@
 <?php
 
-require_once './core/init.php'; // Стартуем сессию, Записываем в $GLOBALS массив с параметрами,
-//необходимыми для подключения к БД, подклоючаем автозагрузку классов и подключаем санитарную функцию.
-
-//Вызываем статический метод класса DB getInstance(), который возвращает экземпляр класса DB.
-//Через экземпляр класса DB обращаемся к методу insert(), который добавляет строку с данными в таблицу.
-$user = DB::getInstance()->insert('users', array(
-    'username' => 'Dale',
-    'password' => 'password',
-    'salt' => 'salt'
-));
+require_once './core/init.php';
+//Обращаемся посредством статического метода класса DB - getInstance() к экземпляру этого самого класса.
+//Вызываем метод get().
+$users = DB::getInstance()->get('users', array('username', '=', 'alex'));
+if ($users->count()) {
+    foreach ($users as $user) {
+        echo $user->username;
+    }
+}
