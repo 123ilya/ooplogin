@@ -2,10 +2,72 @@
 
 class DB
 {
-    private static object $_instance = null; // null обозначает, что значение переменной не заданно.
-    private object $_pdo;
-    private string $_query;
-    private bool $_error = false;
+    private static  $_instance = null; // null обозначает, что значение переменной не заданно.
+    private $_pdo;
+    private $_query;
+    private $_error = false;
     private $_results;
     private $_count = 0;
+
+    private function __construct()
+    {
+        try {
+            //Пытаемся подключиться к базе данных посредством создания экземпляра класса PDO.
+            //Статический метод get() класса Config возвращает строку, соответствующую значению
+            //свойства массива $GLOBALS['config'] согласно указанного  аргумента.
+            $this->_pdo = new PDO(
+                'mysql:host=' . Config::get('mysql/host') .
+                    ';dbname=' . Config::get('mysql/db'),
+                Config::get('mysql/username'),
+                Config::get('mysql/password')
+            );
+            echo "Connected";
+        } catch (PDOException $e) {
+            die($e->getMessage());
+        }
+    }
+
+    public static function getInstance()
+    {
+        if (!isset(self::$_instance)) {
+            self::$_instance = new DB();
+        }
+        return self::$_instance;
+    }
+
+    public function query($sql, $params = array())
+    {
+        $this->_error = false;
+        if ($this->_query = $this->_pdo->prepare($sql)) {
+            $x = 1;
+            if (count($params)) {
+                foreach ($params as $param) {
+                    $this->_query->bindValue($x, $param);
+                    $x++;
+                }
+            }
+            if ($this->_query->execute()) {
+                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                $this->_count = $this->_query->rowCount();
+                // echo "Success";
+            } else {
+                $this->_error = true;
+            }
+        }
+        return $this;
+    }
+    
+    public function error()
+    {
+        return $this->_error;
+    }
+    public function showError()
+    {
+        if ($this->_error === true) {
+            echo 'ERROR!';
+        }
+        if ($this->_error === false) {
+            echo "NOOOERROR!";
+        }
+    }
 }

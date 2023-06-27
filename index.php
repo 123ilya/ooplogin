@@ -1,11 +1,14 @@
 <?php
 
+
 require_once './core/init.php';
-//Обращаемся посредством статического метода класса DB - getInstance() к экземпляру этого самого класса.
-//Вызываем метод get().
-$users = DB::getInstance()->get('users', array('username', '=', 'alex'));
-if ($users->count()) {
-    foreach ($users as $user) {
-        echo $user->username;
-    }
+
+$user = DB::getInstance()->query("SELECT username FROM users WHERE username = ?", array('alex'));
+if ($user->error()) {
+    echo 'No user!';
+} else {
+    echo 'Ok!';
 }
+$user->showError();
+// Почему то , если допустить оппечатку в sql запросе, то свойство $_error в экземпляре класса DB не становиться  true
+// и не выводится сообщение 'No user!'
