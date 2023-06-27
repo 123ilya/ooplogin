@@ -46,28 +46,19 @@ class DB
                     $x++;
                 }
             }
-            if ($this->_query->execute()) {
-                $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
-                $this->_count = $this->_query->rowCount();
-                // echo "Success";
-            } else {
+            try {
+                if ($this->_query->execute()) {
+                    $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                    $this->_count = $this->_query->rowCount();
+                }
+            } catch (\Exception $e) {
                 $this->_error = true;
             }
         }
         return $this;
     }
-    
     public function error()
     {
         return $this->_error;
-    }
-    public function showError()
-    {
-        if ($this->_error === true) {
-            echo 'ERROR!';
-        }
-        if ($this->_error === false) {
-            echo "NOOOERROR!";
-        }
     }
 }
