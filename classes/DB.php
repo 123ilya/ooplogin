@@ -83,12 +83,37 @@ class DB
         return $this->action('DELETE ', $table, $where);
     }
     //-----------------------------------------------------------------------------------------------
+    public function insert($table, $fields = array())
+    {
+        if (count($fields)) {
+            $keys = array_keys($fields);
+            $values = '';
+            $x = 1;
+            foreach ($fields as $field) {
+                $values .= '?';
+                if ($x < count($fields)) {
+                    $values .= ', ';
+                    $x++;
+                }
+            }
+            // die($values);
+
+            $sql = "INSERT INTO users (`" . implode('`, `', $keys) . "`) VALUES({$values})";
+            // echo $sql;
+            if(!$this->query($sql, $fields)->error()){
+                return true;
+            }
+        }
+        return false;
+    }
+    //-----------------------------------------------------------------------------------------------
     public function results()
     {
         return $this->_results;
     }
     //--------------------------------------------------------------------------------------------------
-    public function first(){
+    public function first()
+    {
         return $this->results()[0];
     }
     //-----------------------------------------------------------------------------------------------

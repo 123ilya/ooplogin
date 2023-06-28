@@ -3,11 +3,16 @@
 
 require_once './core/init.php';
 // $user = DB::getInstance()->get('users', array('username', '=', 'alex'));
-$user = DB::getInstance()->query('SELECT * FROM users');
+// $user = DB::getInstance()->query('SELECT * FROM users');
 
-if (!$user->count()) {
-    echo 'no user';
-} else {
-    echo $user->first()->username;
-    // echo 'ok';
-}
+// if (!$user->count()) {
+//     echo 'no user';
+// } else {
+//     echo $user->first()->username;
+//     // echo 'ok';
+// }
+$user = DB::getInstance()->insert('username', array(
+    'username' => 'Dale',
+    'password' => 'password',
+    'salt' => 'salt'
+));
