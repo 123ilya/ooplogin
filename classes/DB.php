@@ -2,7 +2,7 @@
 
 class DB
 {
-    private static  $_instance = null; // null обозначает, что значение переменной не заданно.
+    private static  $_instance = null;
     private $_pdo;
     private $_query;
     private $_error = false;
@@ -12,21 +12,18 @@ class DB
     private function __construct()
     {
         try {
-            //Пытаемся подключиться к базе данных посредством создания экземпляра класса PDO.
-            //Статический метод get() класса Config возвращает строку, соответствующую значению
-            //свойства массива $GLOBALS['config'] согласно указанного  аргумента.
             $this->_pdo = new PDO(
                 'mysql:host=' . Config::get('mysql/host') .
                     ';dbname=' . Config::get('mysql/db'),
                 Config::get('mysql/username'),
                 Config::get('mysql/password')
             );
-            echo "Connected";
+            // echo "Connected";
         } catch (PDOException $e) {
             die($e->getMessage());
         }
     }
-
+    //-----------------------------------------------------------------------------------------------------
     public static function getInstance()
     {
         if (!isset(self::$_instance)) {
@@ -34,7 +31,7 @@ class DB
         }
         return self::$_instance;
     }
-
+    //--------------------------------------------------------------------------------------------------------
     public function query($sql, $params = array())
     {
         $this->_error = false;
@@ -51,14 +48,50 @@ class DB
                     $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
                     $this->_count = $this->_query->rowCount();
                 }
-            } catch (\Exception $e) {
+            } catch (PDOException $e) {
                 $this->_error = true;
+                echo $e->getMessage();
             }
         }
         return $this;
     }
+    //-----------------------------------------------------------------------------------------------------------
+    public function action($action, $table, $where = array())
+    {
+        if (count($where) === 3) {
+            $operators = array('=', '>', '<', '>=', '<=');
+            $field = $where[0];
+            $operator = $where[1];
+            $value = $where[2];
+            if (in_array($operator, $operators)) {
+                $sql = "{$action} FROM {$table} WHERE {$field}{$operator} ?";
+                if (!$this->query($sql, array($value))->error()) {
+                    return $this;
+                }
+            }
+        }
+        return false;
+    }
+    //---------------------------------------------------------------------------------------------------------
+    public function get($table, $where)
+    {
+        return $this->action('SELECT *', $table, $where);
+    }
+    //-------------------------------------------------------------------------------------------------------
+    public function delete($table, $where)
+    {
+        return $this->action('DELETE ', $table, $where);
+    }
+    //-----------------------------------------------------------------------------------------------
     public function error()
     {
         return $this->_error;
     }
+    //-----------------------$user = DB::getInstance()->get('users', array('username', '=', 'alex'));
+    public function count()
+    {
+        return $this->_count;
+    }
+    //---------------------------------------------------------------------------------------
+    
 }
