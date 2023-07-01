@@ -11,8 +11,15 @@ require_once './core/init.php';
 //     echo $user->first()->username;
 //     // echo 'ok';
 // }
-$user = DB::getInstance()->insert('username', array(
-    'username' => 'Dale',
-    'password' => 'password',
-    'salt' => 'salt'
+// $user = DB::getInstance()->insert('username', array(
+//     'username' => 'Dale',
+//     'password' => 'password',
+//     'salt' => 'salt'
+// ));
+
+
+$userInsert = DB::getInstance()->update('users', 3, array(
+    'password' => 'newpassword',
+    'name' => 'Alen Delohn',
+    'username' => 'BOB'
 ));

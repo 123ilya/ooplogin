@@ -100,12 +100,31 @@ class DB
 
             $sql = "INSERT INTO users (`" . implode('`, `', $keys) . "`) VALUES({$values})";
             // echo $sql;
-            if(!$this->query($sql, $fields)->error()){
+            if (!$this->query($sql, $fields)->error()) {
                 return true;
             }
         }
         return false;
     }
+    //----------------------------------------------------------------------------------------------
+    public function update($table, $id, $fields)
+    {
+        $set = '';
+        $x = 1;
+        foreach ($fields as $key => $value) {
+            $set .= "{$key} = ?";
+            if ($x < count($fields)) {
+                $set .= ', ';
+            }
+            $x++;
+        }
+        $sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+        if (!$this->query($sql, $fields)->error()) {
+            return true;
+        }
+        return false;
+    }
+
     //-----------------------------------------------------------------------------------------------
     public function results()
     {
@@ -121,7 +140,7 @@ class DB
     {
         return $this->_error;
     }
-    //-----------------------$user = DB::getInstance()->get('users', array('username', '=', 'alex'));
+    //--------------------------------------------------------------------------------------
     public function count()
     {
         return $this->_count;
