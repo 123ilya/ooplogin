@@ -7,7 +7,7 @@ class Config
     public static function get(string $path = null): string
     {
         if ($path) {
-            $config = $GLOBALS['config'];
+            $config = $GLOBALS['config'];//В переменную $config записываем содержимое массива $GLOBALS['config']
             $path = explode('/', $path); //$path - массив, созданный из осколков аргумента(разбитой по разделителю '/' строки)
             //Пробегаем по массиву и на каждой итерации, если в массиве $config на верхнем уровне
             //есть ключ, совпадающий со значением $bit, то массиву присваивается значение этого ключа.

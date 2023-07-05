@@ -2,9 +2,9 @@
 
 class DB
 {
-    private static  $_instance = null;
-    private $_pdo;
-    private $_query;
+    private static  $_instance = null;//Статическое свойство, предназначенное для записи экземпляра класса DB.
+    private $_pdo; //Экземпляр класса PDO
+    private $_query;//Строка sql запроса
     private $_error = false;
     private $_results;
     private $_count = 0;
@@ -12,6 +12,8 @@ class DB
     private function __construct()
     {
         try {
+            //Записываем в свойство _pdo экземпляр класса PDO. Процедура проходит в блоке try catch.
+            //Так как необходимо в случае неудачи отловить ошибку.
             $this->_pdo = new PDO(
                 'mysql:host=' . Config::get('mysql/host') .
                     ';dbname=' . Config::get('mysql/db'),
@@ -24,6 +26,9 @@ class DB
         }
     }
     //-----------------------------------------------------------------------------------------------------
+    //Статический метод, создаёт экземпляр класса DB,записывает его в статическое свойство $_instance
+    //и возвращает его. Если экземпляр класса уже создан и записан в $_instance, то тогда метод просто
+    //возвращает ранее созданный экземпляр класса и не создаёт новый.
     public static function getInstance()
     {
         if (!isset(self::$_instance)) {
@@ -32,11 +37,14 @@ class DB
         return self::$_instance;
     }
     //--------------------------------------------------------------------------------------------------------
+    //Метод, формирующий строку SQL запроса.
     public function query($sql, $params = array())
     {
         $this->_error = false;
+        //Подготавливаем строку запроса и записываем её в строку _query
         if ($this->_query = $this->_pdo->prepare($sql)) {
             $x = 1;
+            //Если параметры были переданы, то связываем строку запроса с этими параметрами
             if (count($params)) {
                 foreach ($params as $param) {
                     $this->_query->bindValue($x, $param);
@@ -44,8 +52,11 @@ class DB
                 }
             }
             try {
+                //Пытаемся выполнить запрос
                 if ($this->_query->execute()) {
+                    //Результат получаем в виде объекта
                     $this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ);
+                    //В свойство _count записываем количество вернувшихся строк.
                     $this->_count = $this->_query->rowCount();
                 }
             } catch (PDOException $e) {
@@ -98,7 +109,7 @@ class DB
             }
             // die($values);
 
-            $sql = "INSERT INTO users (`" . implode('`, `', $keys) . "`) VALUES({$values})";
+            $sql = "INSERT INTO {$table} (`" . implode('`, `', $keys) . "`) VALUES({$values})";
             // echo $sql;
             if (!$this->query($sql, $fields)->error()) {
                 return true;

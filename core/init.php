@@ -1,20 +1,20 @@
 <?php
 
-session_start();
-//В суперглобальном массиве $GLOBALS создаём элемент 'config', являющийся массивом.
+session_start();//Стартуем сессию
+//В суперглобальном массиве $GLOBALS создаём элемент 'config', являющийся многомерным массивом.
 //В массиве 'config' храняться параметры для подключения к базе данных
 $GLOBALS['config'] = array(
-    'mysql' => array(
-        'host' => '127.0.0.1',
-        'username' => 'root',
-        'password' => '',
-        'db' => 'ooplogin'
+    'mysql' => array(//Данные для подключения к базе данных
+        'host' => '127.0.0.1',//Хост
+        'username' => 'root',//Пользователь
+        'password' => '',//Пароль (в данном случае пустой)
+        'db' => 'ooplogin'//Название базы данных
     ),
-    'remember' => array(
+    'remember' => array(//Настройки куки
         'cookie_name' => 'hash',
         'cookie_expire' => 604800
     ),
-    'session' => array(
+    'session' => array(//Настройки куки
         'session_name' => 'user'
     ),
 );
