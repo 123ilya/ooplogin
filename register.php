@@ -1,9 +1,10 @@
 <?php
 require './core/init.php';
 
+
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
-        echo 'i have been run';
+        // echo 'i have been run';
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
             'username' => array(
@@ -29,9 +30,28 @@ if (Input::exists()) {
         ));
         if ($validation->passed()) {
             //register user
-            // echo 'Passed';
-            Session::flash('success', 'You registered successfully!');
-            header('Location: index.php');
+            // Session::flash('success', 'You registered successfully!');
+            // header('Location: index.php');
+            $user =  new User();
+            $salt =  Hash::salt(32);
+            try {
+                $user->create(
+                    array(
+                        'username' => Input::get('username'),
+                        'password' => Hash::make(Input::get('password'), $salt),
+                        // 'salt' => $salt,
+                        'salt' => mb_convert_encoding($salt, 'UTF-8'), //Принудительно конвертируем в UTF-8 так как
+                        //если этого не сделать, то возникнет проблемма с дабавлением значения в БД
+                        'name' => Input::get('name'),
+                        'joined' => date("Y-m-d H:i:s"),
+                        'group' => 1
+                    )
+                );
+                Session::flash('home', 'You have bin registered and can now log in!');
+                header('Location: index.php');
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
         } else {
             //output errors
             foreach ($validation->errors() as $error) {
