@@ -48,7 +48,8 @@ if (Input::exists()) {
                     )
                 );
                 Session::flash('home', 'You have bin registered and can now log in!');
-                header('Location: index.php');
+                // Redirect::to('index.php');
+                Redirect::to(404);
             } catch (Exception $e) {
                 die($e->getMessage());
             }
