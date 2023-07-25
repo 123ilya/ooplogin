@@ -34,9 +34,14 @@ class User
     //-----------------------------------------------------------------------------------------------------
     public function login($username = null, $password = null)
     {
-        $user = $this->find($username);//В случае, если пользователь найден, то переменной user
+        $user = $this->find($username); //В случае, если пользователь найден, то переменной user
         //присваивается значение true, иначе false
-        if ($user) {///Проверить отсюда!!!!!
+        //Если $user = true, то
+        if ($user) {
+            echo($this->data()->password). '<br>'. (Hash::make($password, $this->data()->salt));
+            die();
+            //Пароль из БД и пароль, возвращаемый методом Hash::make() не совпадают!!!
+            //Необходимо проверить, как формируются пароли!!!
             if ($this->data()->password === Hash::make($password, $this->data()->salt)) {
                 echo 'Ok!';
                 return true; // Проверка!!!!!!!!!!!!!! Удалить если не сработает!
