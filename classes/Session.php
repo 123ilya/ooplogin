@@ -4,7 +4,7 @@ class Session
 {
     //Метод exists(() проверяет наличие данного свойства в суперглобальном массиве $_SESSION 
     //по ключу,переданному в качестве аргумента
-    public static function exists($name)
+    public static function exists($name):bool
     {
         return (isset($_SESSION[$name])) ? true : false;
     }
