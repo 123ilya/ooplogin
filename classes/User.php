@@ -38,12 +38,10 @@ class User
         //присваивается значение true, иначе false
         //Если $user = true, то
         if ($user) {
-            echo($this->data()->password). '<br>'. (Hash::make($password, $this->data()->salt));
-            die();
             //Пароль из БД и пароль, возвращаемый методом Hash::make() не совпадают!!!
             //Необходимо проверить, как формируются пароли!!!
             if ($this->data()->password === Hash::make($password, $this->data()->salt)) {
-                echo 'Ok!';
+                // echo 'Ok!';
                 return true; // Проверка!!!!!!!!!!!!!! Удалить если не сработает!
             }
         }

@@ -4,7 +4,6 @@ require './core/init.php';
 
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
-        // echo 'i have been run';
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
             'username' => array(
@@ -39,9 +38,10 @@ if (Input::exists()) {
                     array(
                         'username' => Input::get('username'),
                         'password' => Hash::make(Input::get('password'), $salt),
-                        // 'salt' => $salt,
-                        'salt' => mb_convert_encoding($salt, 'UTF-8'), //Принудительно конвертируем в UTF-8 так как
+                        'salt' => $salt,
+                        //Принудительно конвертируем в UTF-8 так как
                         //если этого не сделать, то возникнет проблемма с дабавлением значения в БД
+                        // 'salt' => mb_convert_encoding($salt, 'UTF-8'), 
                         'name' => Input::get('name'),
                         'joined' => date("Y-m-d H:i:s"),
                         'group' => 1

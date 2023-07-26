@@ -12,9 +12,8 @@ if (Input::exists()) {
 
             //log user in
             $user = new User();
-            // print_r($user);
-            // die();
-            $login = $user->login(Input::get('username'), Input::get('password')); //!!!!!!!!!!!!!!!!!!!!
+          
+            $login = $user->login(Input::get('username'), Input::get('password')); 
 
             if ($login) {
                 echo 'Success';

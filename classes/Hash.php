@@ -10,7 +10,7 @@ class Hash
     //Метод возвращает закодированную строку. Длина строки определяется значением аргумента $length
     public static function salt(int $length): string
     {
-        return random_bytes($length);
+        return mb_convert_encoding(random_bytes($length), 'UTF-8');
     }
     //Метод возвращает хэшированную строку, полученную из 'уникального id', полученного на основании
     //текущего времени в микросекундах. 
