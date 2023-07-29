@@ -1,7 +1,7 @@
 <?php
 require_once 'core/init.php';
 //Проверяем была ли отправленна форма, и если да, то...
-if (Input::exists()) {  
+if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
@@ -16,7 +16,7 @@ if (Input::exists()) {
             $login = $user->login(Input::get('username'), Input::get('password'));
 
             if ($login) {
-                echo 'Success';
+                Redirect::to('index.php');
             } else {
                 echo '<p> Sorry! Loggin in failed! </p>';
             }
