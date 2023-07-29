@@ -4,19 +4,21 @@ class User
 {
     private $_db;
     private $_data;
+    private $_sessionName;
 
     public function __construct($user = null)
     {
         $this->_db = DB::getInstance();
+        $this->_sessionName = Config::get('session/session_name');
     }
-
+    //-------------------------------------------------------------------------------------------
     public function create($fields = array())
     {
         if (!$this->_db->insert('users', $fields)) {
             throw new Exception('There was a problem kreating account.');
         }
     }
-
+    //-------------------------------------------------------------------------------------------
     public function find($user = null)
     { //Если аргумент был передан, то
         if ($user) {
@@ -41,7 +43,8 @@ class User
             //Пароль из БД и пароль, возвращаемый методом Hash::make() не совпадают!!!
             //Необходимо проверить, как формируются пароли!!!
             if ($this->data()->password === Hash::make($password, $this->data()->salt)) {
-                // echo 'Ok!';
+                Session::put($this->_sessionName, $this->data()->id);
+                // echo 'Ok!';  
                 return true; // Проверка!!!!!!!!!!!!!! Удалить если не сработает!
             }
         }
