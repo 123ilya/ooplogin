@@ -5,7 +5,7 @@ class User
     private $_db;
     private $_data;
     private $_sessionName;
-    private bool $_isLoggedIn;
+    private $_isLoggedIn;
 
     public function __construct($user = null)
     {
@@ -70,7 +70,7 @@ class User
         return $this->_data;
     }
 
-    public function isLoggedIn(): bool
+    public function isLoggedIn()
     {
         return $this->_isLoggedIn;
     }
