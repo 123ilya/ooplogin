@@ -5,12 +5,15 @@ class User
     private $_db;
     private $_data;
     private $_sessionName;
+    private $_coockieName;
     private $_isLoggedIn;
 
     public function __construct($user = null)
     {
         $this->_db = DB::getInstance();
         $this->_sessionName = Config::get('session/session_name');
+        $this->_coockieName = Config::get('remember/cookie_name');
+
         if (!$user) {
             if (Session::exists($this->_sessionName)) {
                 $user = Session::get($this->_sessionName);
@@ -47,7 +50,7 @@ class User
         return false;
     }
     //-----------------------------------------------------------------------------------------------------
-    public function login($username = null, $password = null)
+    public function login($username = null, $password = null, $remember)
     {
         $user = $this->find($username); //В случае, если пользователь найден, то переменной user
         //присваивается значение true, иначе false
@@ -58,7 +61,21 @@ class User
             if ($this->data()->password === Hash::make($password, $this->data()->salt)) {
                 Session::put($this->_sessionName, $this->data()->id);
                 // echo 'Ok!';  
-                return true; // Проверка!!!!!!!!!!!!!! Удалить если не сработает!
+                if ($remember) {
+                    $hash = Hash::unique();
+                    $hashCheck = $this->_db->get('users_session', array('user_id', '=', $this->data()->id));
+                    if (!$hashCheck->count()) {
+                        $this->_db->insert('users_session', array(
+                            'user_id' => $this->_data->id,
+                            'hash' => $hash
+
+                        ));
+                    } else {
+                        $hash = $hashCheck->first()->hash;
+                    }
+                    Coockie::put($this->_coockieName, $hash, Config::get('remember/cookie_expire'));
+                }
+                return true;
             }
         }
 
